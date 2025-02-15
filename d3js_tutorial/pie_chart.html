@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <script>
+        var dataArr = [20, 40, 50, 60];
+        var width = 500;
+        var height = 500;
+        var radius = Math.min(width, height) / 2;
+
+// Create a color scale
+var color = d3.scaleOrdinal()
+    .domain(dataArr)
+    .range(['red', 'blue', 'green', 'orange']);
+
+// Create a pie generator
+var pie = d3.pie();
+
+// Create an arc generator
+var arc = d3.arc()
+    .innerRadius(0) // For a pie chart, inner radius is 0
+    .outerRadius(radius);
+
+// Append the SVG canvas
+var canvas = d3.select("body")
+    .append("svg")
+    .attr('width', width)
+    .attr('height', height)
+    .append('g')
+    .attr('transform', `translate(250, 250)`);
+
+// Bind data and create pie chart slices
+var slices = canvas.selectAll('path')
+    .data(pie(dataArr))
+    .enter()
+    .append('path')
+    .attr('d', arc)
+    .attr('fill', function(d) { return color(d); });
+    
+
+    </script>
+    
+</body>
+</html>

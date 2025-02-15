@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <script>
+        var dataArr = [20, 40, 50, 60];
+        var width = 500;
+        var height = 500;
+
+var heightScale = d3.scaleLinear()
+                    .domain([0, 60])
+                    .range([0, height]);
+
+var color = d3.scaleLinear()
+              .domain([0, 60])
+              .range(['red', 'green']);
+
+var axis = d3.axisLeft() // Change to vertical axis (left)
+             .ticks(5)
+             .scale(heightScale);
+
+var canvas = d3.select('body')
+               .append('svg')
+               .attr('width', width)
+               .attr('height', height)
+               .append('g')
+               .attr('transform', 'translate(50, 20)'); // Adjust translation for better alignment
+
+var bars = canvas.selectAll('rect')
+                 .data(dataArr)
+                 .enter()
+                 .append('rect')
+                 .attr('width', 50) // Fixed width for each bar
+                 .attr('height', function(d) { return heightScale(d); }) // Height based on data
+                 .attr('fill', function(d) { return color(d); })
+                 .attr('x', function(d, i) { return i * 100; }) // Position horizontally
+                 .attr('y', function(d) { return height - heightScale(d); }) // Position vertically, aligned to bottom
+                 // Add hover effects
+                 .on('mouseover', function(event, d) {
+                    d3.select(this)
+                      .transition() // Start transition
+                      .duration(300) // Duration in milliseconds
+                      .attr('y', function() { return height - heightScale(d) - 10; }) // Move up
+                      .attr('fill', 'orange'); // Change color
+                })
+                .on('mouseout', function(event, d) {
+                    d3.select(this)
+                      .transition() // Start transition
+                      .duration(300) // Duration in milliseconds
+                      .attr('y', function() { return height - heightScale(d); }) // Move back to original position
+                      .attr('fill', color(d)); // Reset color
+                });
+                 /*.on('mouseover', function(event, d) {
+                    d3.select(this)
+                      .attr('fill', 'orange') // Change color on hover
+                      .attr('opacity', 0.8); // Optional: Add transparency
+                })
+                .on('mouseout', function(event, d) {
+                    d3.select(this)
+                      .attr('fill', color(d)) // Reset to original color
+                      .attr('opacity', 1);    // Reset transparency
+                });*/
+
+canvas.append('g')
+      .call(axis)
+      .attr('transform', 'translate(0, 0)'); // Axis on the left
+
+    </script>
+    
+</body>
+</html>

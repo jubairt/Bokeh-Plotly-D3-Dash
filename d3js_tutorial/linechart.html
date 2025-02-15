@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <script>
+        var dataArr = [20, 40, 50, 60];
+var width = 500;
+var height = 500;
+
+var xScale = d3.scaleLinear() // X-axis for line chart
+               .domain([0, dataArr.length - 1]) // Based on index of data points
+               .range([0, width - 100]); // Add padding for axis
+
+var yScale = d3.scaleLinear() // Y-axis for data values
+               .domain([0, 60])
+               .range([height - 50, 0]); // Inverted to align with SVG coordinates
+
+var color = d3.scaleLinear()
+              .domain([0, 60])
+              .range(['red', 'green']);
+
+var xAxis = d3.axisBottom() // Horizontal axis
+              .scale(xScale)
+              .ticks(dataArr.length - 1);
+
+var yAxis = d3.axisLeft() // Vertical axis
+              .scale(yScale)
+              .ticks(5);
+
+var canvas = d3.select('body')
+               .append('svg')
+               .attr('width', width)
+               .attr('height', height)
+               .append('g')
+               .attr('transform', 'translate(50, 20)'); // Adjust translation for better alignment
+
+// Line generator function
+var line = d3.line()
+             .x(function(d, i) { return xScale(i); }) // X position based on index
+             .y(function(d) { return yScale(d); });  // Y position based on data value
+
+// Append the line path
+canvas.append('path')
+      .datum(dataArr) // Bind data
+      .attr('d', line) // Use the line generator
+      .attr('fill', 'none') // No fill for line
+      .attr('stroke', 'blue') // Line color
+      .attr('stroke-width', 2); // Line width
+
+// Add X-axis
+canvas.append('g')
+      .call(xAxis)
+      .attr('transform', `translate(0, ${height - 50})`); // Move to bottom of canvas
+
+// Add Y-axis
+canvas.append('g')
+      .call(yAxis)
+      .attr('transform', 'translate(0, 0)'); // Align to the left
+
+
+    </script>
+    
+</body>
+</html>
